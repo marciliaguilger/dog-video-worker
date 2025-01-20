@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dog-video-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dog-video-worker
+  template:
+    metadata:
+      labels:
+        app: dog-video-worker
+    spec:
+      hostname: dog-video-worker
+      serviceAccountName: dog-video-account
+      containers:
+      - name: dog-video-worker
+        image: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/dog-video-worker:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: "1024Mi"
+          limits:
+            cpu: 1000m
+            memory: "2048Mi"
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DOG_VIDEO_API
+          value: 'http://dog-restaurant-customer.default.svc.cluster.local:80'
+        - name: AWS_REGION
+          value: "us-east-1"   
+        - name: VIDEO_QUEUE
+          value: "dog-video-queue"
