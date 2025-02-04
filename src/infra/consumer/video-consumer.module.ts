@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { SqsModule } from '@ssut/nestjs-sqs';
 import { VideoConsumerService } from './video-consumer.service';
 import { config } from 'src/config';
+import { S3Service } from '../repository/s3-service';
+import { VideoService } from 'src/domain/video-processor.service';
 
-// Configuração para LocalStack
 export const localConfig = {
   region: config.AWS_REGION,
   endpoint: config.VIDEO_QUEUE_URL,
@@ -27,6 +28,6 @@ export const localConfig = {
     }),
   ],
   controllers: [],
-  providers: [VideoConsumerService],
+  providers: [VideoConsumerService, S3Service, VideoService],
 })
 export class VideoConsumerModule {}

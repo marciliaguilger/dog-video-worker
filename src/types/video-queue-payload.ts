@@ -1,4 +1,5 @@
 export interface VideoQueuePayload {
-    id: string;
-    path: string
+    sourceBucketName: string;
+    targetBucketName: string;
+    fileId: string
 }
