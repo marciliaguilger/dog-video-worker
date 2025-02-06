@@ -106,10 +106,10 @@ aws sqs receive-message --endpoint-url http://localhost:4566 --queue-url http://
 ```
 
 - To create a bucket
-aws --endpoint-url=http://localhost:4566 s3 mb s3://test 
+aws --endpoint-url=http://localhost:4566 s3 mb s3://video 
 
 - To list buckets 
 aws --endpoint-url=http://localhost:4566 s3 ls
 
 - Upload file:
-aws --endpoint-url=http://localhost:4566 s3 cp 1.txt s3://test
+aws --endpoint-url=http://localhost:4566 s3 cp video.mp4 s3://video

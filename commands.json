@@ -1,11 +1,15 @@
 aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url http://localhost:4566/000000000000/video-queue --region=us-east-1 --message-body '
 {
     "fileId": "video.mp4",
-    "sourceBucketName": "test",
-    "targetBucketName": "video-queue"
+    "sourceBucketName": "video",
+    "targetBucketName": "frames"
 }'
 
 
 aws --endpoint-url=http://localhost:4566 s3 ls s3://video-queue/
 
 aws --endpoint-url=http://localhost:4566 s3 cp s3://video-queue/frame-406.png /home/marciliadasilvaguilguer/Documentos/repos/pos-tech/hacka/dog-video-worker/files
+
+
+aws sqs purge-queue --queue-url =http://localhost:4566/000000000000/video-queue
+

@@ -52,6 +52,17 @@ export class S3Service {
     }
   }
 
+  async uploadZipToS3(zipPath: string, bucket: string, zipFileName: string): Promise<void> {
+    const fileStream = fs.createReadStream(zipPath);
+    const command = new PutObjectCommand({
+      Bucket: bucket,
+      Key: zipFileName,
+      Body: fileStream,
+      ContentType: 'application/zip',
+    });
+    await this.s3Client.send(command);
+  }
+
   async uploadFile(bucketName: string, key: string, fileBuffer: Buffer, fileMimeType: string): Promise<void> {
     try {
       const command = new PutObjectCommand({
