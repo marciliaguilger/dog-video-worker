@@ -13,16 +13,6 @@ export class S3Service {
   private readonly s3: AWS.S3;
   private s3Client: S3Client;
 
-  constructor(private configService: ConfigService) {
-    this.s3Client = new S3Client({
-      endpoint: 'http://127.0.0.1:4566', // Endpoint do LocalStack
-      region: 'us-east-1',
-      credentials: {
-        accessKeyId: 'test',
-        secretAccessKey: 'test',
-      },
-    });
-  }
 
   async downloadVideoFromS3(bucket: string, key: string, downloadPath: string): Promise<void> {
     const command = new GetObjectCommand({ Bucket: bucket, Key: key });
