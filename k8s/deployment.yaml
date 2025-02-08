@@ -16,7 +16,7 @@ spec:
       serviceAccountName: dog-video-account
       containers:
       - name: dog-video-worker
-        image: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/dog-video-worker:latest
+        image: 764549915701.dkr.ecr.us-east-1.amazonaws.com/dog-video-worker:latest
         resources:
           requests:
             cpu: 100m
@@ -28,7 +28,7 @@ spec:
         - containerPort: 3000
         env:
         - name: DOG_VIDEO_API
-          value: 'http://dog-restaurant-customer.default.svc.cluster.local:80'
+          value: 'http://dog-video-api.default.svc.cluster.local:80'
         - name: AWS_REGION
           value: "us-east-1"   
         - name: VIDEO_QUEUE
