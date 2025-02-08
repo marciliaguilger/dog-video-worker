@@ -1,7 +1,6 @@
 
 import { Injectable, Logger } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
-import { ConfigService } from '@nestjs/config';
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import * as path from 'path';
@@ -12,6 +11,10 @@ export class S3Service {
   private readonly logger = new Logger(S3Service.name);
   private readonly s3: AWS.S3;
   private s3Client: S3Client;
+
+  constructor() {
+    this.s3Client = new S3Client({});
+  }
 
 
   async downloadVideoFromS3(bucket: string, key: string, downloadPath: string): Promise<void> {
