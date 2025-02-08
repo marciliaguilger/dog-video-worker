@@ -5,15 +5,6 @@ import { config } from 'src/config';
 import { S3Service } from '../repository/s3-service';
 import { VideoService } from 'src/domain/video-processor.service';
 
-export const localConfig = {
-  region: config.AWS_REGION,
-  endpoint: config.VIDEO_QUEUE_URL,
-  credentials: {
-    accessKeyId: config.AWS_ACCESS_KEY_ID,
-    secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
-  }
-};
-
 @Module({
   imports: [
     SqsModule.register({
