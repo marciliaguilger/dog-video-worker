@@ -29,7 +29,7 @@ export class VideoConsumerService {
     
     const downloadPath = '/tmp/video.mp4';
     const framesDir = '/tmp/frames';
-    const fileName = `/frames/${uuidv4()}.zip`;
+    const fileName = `frames/${uuidv4()}.zip`;
     const zipPath = `/tmp/${fileName}`;
 
     if (!fs.existsSync(framesDir)) {
