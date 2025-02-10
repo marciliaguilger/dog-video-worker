@@ -1,6 +1,5 @@
 
 import { Injectable, Logger } from '@nestjs/common';
-import * as AWS from 'aws-sdk';
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import * as path from 'path';
@@ -9,7 +8,6 @@ import * as fs from 'fs';
 @Injectable()
 export class S3Service {
   private readonly logger = new Logger(S3Service.name);
-  private readonly s3: AWS.S3;
   private s3Client: S3Client;
 
   constructor() {
