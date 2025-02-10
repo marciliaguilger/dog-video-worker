@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import * as fs from 'fs';
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as path from 'path';
@@ -6,8 +6,11 @@ import { IDogVideoApiClient } from "./service/dog-video-service.interface";
 import { UpdateFileDataDto } from "./dto/update-file-data.dto";
 
 @Injectable()
-export class VideoService {  
-  constructor(private readonly videoFileService: IDogVideoApiClient) {}
+export class VideoService {
+  constructor(
+    @Inject(IDogVideoApiClient)
+    private readonly videoFileService: IDogVideoApiClient,
+  ) {}
 
   async updateStatus(fileId: string,dto: UpdateFileDataDto ){
     this.videoFileService.updateFileStatus(fileId, dto)
