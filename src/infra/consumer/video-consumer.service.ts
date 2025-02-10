@@ -12,41 +12,52 @@ import * as fs from 'fs';
 import * as archiver from 'archiver';
 import { VideoService } from 'src/domain/video-processor.service';
 import { v4 as uuidv4 } from 'uuid';
+import { UpdateFileDataDto } from 'src/domain/dto/update-file-data.dto';
+import { IDogVideoApiClient } from 'src/domain/service/dog-video-service.interface';
 @Injectable()
 export class VideoConsumerService {
   constructor(
     private readonly s3Service: S3Service,
     private readonly videoService: VideoService
+    
   ) { }
   @SqsMessageHandler(config.VIDEO_QUEUE_NAME, false)
   async handleMessage(message: AWS.Message) {
     const queuePayload: VideoQueuePayload = JSON.parse(
       message.Body,
     ) as VideoQueuePayload;
+        console.log(`Handling request for report ${queuePayload.sourceBucketName}`);
+        const downloadPath = '/tmp/video.mp4';
+        const framesDir = '/tmp/frames';
+        const fileName = `frames/${uuidv4()}.zip`;
+        const zipPath = `/tmp/${fileName}`;
 
+    try {
+        
+        if (!fs.existsSync(framesDir)) {
+          fs.mkdirSync(framesDir);
+        }
+        
+        console.log('downloading video...')
+        await this.s3Service.downloadVideoFromS3(queuePayload.sourceBucketName, queuePayload.fileKey, downloadPath);
 
-    console.log(`Handling request for report ${queuePayload.sourceBucketName}`);
-    
-    const downloadPath = '/tmp/video.mp4';
-    const framesDir = '/tmp/frames';
-    const fileName = `frames/${uuidv4()}.zip`;
-    const zipPath = `/tmp/${fileName}`;
+        console.log('extracting frames...')
+        const frames = await this.videoService.extractFrames(downloadPath, framesDir);
+        
+        console.log('creating zip...')
+        await this.zipFiles(framesDir, zipPath)
+        
+        console.log('uploading to s3...')
+        await this.s3Service.uploadZipToS3(zipPath, queuePayload.targetBucketName, fileName);
 
-    if (!fs.existsSync(framesDir)) {
-      fs.mkdirSync(framesDir);
+        const updateStatusDto = new UpdateFileDataDto('SUCCESS', fileName);
+        await this.videoService.updateStatus(queuePayload.fileId, updateStatusDto)
+    }
+    catch(err){
+      const updateStatusDto = new UpdateFileDataDto('ERROR', fileName);
+      await this.videoService.updateStatus(queuePayload.fileId, updateStatusDto)
     }
     
-    console.log('downloading video...')
-    await this.s3Service.downloadVideoFromS3(queuePayload.sourceBucketName, queuePayload.fileId, downloadPath);
-
-    console.log('extracting frames...')
-    const frames = await this.videoService.extractFrames(downloadPath, framesDir);
-    
-    console.log('creating zip...')
-    await this.zipFiles(framesDir, zipPath)
-    
-    console.log('uploading to s3...')
-    await this.s3Service.uploadZipToS3(zipPath, queuePayload.targetBucketName, fileName);
   }
 
   private async zipFiles(sourceDir: string, outPath: string) {

@@ -1,7 +1,7 @@
 import { UpdateFileDataDto } from "src/domain/dto/update-file-data.dto";
 
-export interface IDogVideoFilesService {
-    updateFileData(userId: string, fileId: string, body: UpdateFileDataDto): Promise<any>;
+export interface IDogVideoApiClient {
+    updateFileStatus(fileId: string, body: UpdateFileDataDto): Promise<any>;
 }
 
-export const IDogVideoFilesService = Symbol('IDogVideoFilesService');
+export const IDogVideoApiClient = Symbol('IDogVideoApiClient');

@@ -1,12 +1,13 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { IDogVideoFilesService } from 'src/domain/service/dog-video-service.interface';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { IDogVideoApiClient } from 'src/domain/service/dog-video-service.interface';
 import { DogVideoApiClient } from './dog-video-api.client';
 
 @Module({
   imports: [
     HttpModule.registerAsync({
+      imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         timeout: configService.get('TIMEOUT'),
         maxRedirects: configService.get('MAX_REDIRECTS'),
@@ -21,10 +22,10 @@ import { DogVideoApiClient } from './dog-video-api.client';
   providers: [
     DogVideoApiClient,
     {
-      provide: IDogVideoFilesService,
+      provide: IDogVideoApiClient,
       useClass: DogVideoApiClient,
     },
   ],
-  exports: [DogVideoApiClient],
+  exports: [IDogVideoApiClient],
 })
 export class DogVideoApiModule {}

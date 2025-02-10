@@ -3,10 +3,12 @@ import { SqsModule } from '@ssut/nestjs-sqs';
 import { VideoConsumerService } from './video-consumer.service';
 import { config } from 'src/config';
 import { S3Service } from '../repository/s3-service';
-import { VideoService } from 'src/domain/video-processor.service';
+import { VideoService } from '../../domain/video-processor.service';
+import { DogVideoApiModule } from '../client/dog-video-api.module';
 
 @Module({
   imports: [
+    DogVideoApiModule,
     SqsModule.register({
       consumers: [
         {
@@ -18,7 +20,7 @@ import { VideoService } from 'src/domain/video-processor.service';
       producers: [],
     }),
   ],
-  controllers: [],
   providers: [VideoConsumerService, S3Service, VideoService],
+  exports: [VideoConsumerService],
 })
 export class VideoConsumerModule {}
