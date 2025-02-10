@@ -55,7 +55,7 @@ export class VideoConsumerService {
         
         console.log('uploading to s3...')
         console.log('fileName: '+ fileName)
-        await this.s3Service.uploadZipToS3(zipPath, queuePayload.targetBucketName, fileName);
+        await this.s3Service.uploadZipToS3(zipPath, queuePayload.sourceBucketName, fileName);
 
         const updateStatusDto = new UpdateFileDataDto('SUCCESS', fileName);
         await this.dogVideoApiClient.updateFileStatus(queuePayload.fileId, updateStatusDto)
