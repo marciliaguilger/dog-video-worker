@@ -50,15 +50,18 @@ export class VideoConsumerService {
         const frames = await this.videoService.extractFrames(downloadPath, framesDir);
         
         console.log('creating zip...')
+        console.log('zippath: '+zipPath)
         await this.zipFiles(framesDir, zipPath)
         
         console.log('uploading to s3...')
+        console.log('fileName: '+ fileName)
         await this.s3Service.uploadZipToS3(zipPath, queuePayload.targetBucketName, fileName);
 
         const updateStatusDto = new UpdateFileDataDto('SUCCESS', fileName);
         await this.dogVideoApiClient.updateFileStatus(queuePayload.fileId, updateStatusDto)
     }
     catch(err){
+      console.log(err)
       const updateStatusDto = new UpdateFileDataDto('ERROR', fileName);
       await this.dogVideoApiClient.updateFileStatus(queuePayload.fileId, updateStatusDto)
     }
