@@ -27,8 +27,8 @@ spec:
         ports:
         - containerPort: 3000
         env:
-        - name: DOG_VIDEO_API
-          value: 'http://dog-video-api.default.svc.cluster.local:80'
+        - name: DOG_VIDEO_API_URL
+          value: 'http://a414ca3de665e4029b489d4858c1401f-923690164.us-east-1.elb.amazonaws.com:80'
         - name: AWS_REGION
           value: "us-east-1"   
         - name: VIDEO_QUEUE

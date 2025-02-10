@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   SqsConsumerEventHandler,
   SqsMessageHandler,
@@ -18,7 +18,9 @@ import { IDogVideoApiClient } from 'src/domain/service/dog-video-service.interfa
 export class VideoConsumerService {
   constructor(
     private readonly s3Service: S3Service,
-    private readonly videoService: VideoService
+    private readonly videoService: VideoService,
+    @Inject(IDogVideoApiClient)
+    private readonly dogVideoApiClient: IDogVideoApiClient,
     
   ) { }
   @SqsMessageHandler(config.VIDEO_QUEUE_NAME, false)
@@ -37,6 +39,9 @@ export class VideoConsumerService {
         if (!fs.existsSync(framesDir)) {
           fs.mkdirSync(framesDir);
         }
+
+        console.log('message:')
+        console.log(queuePayload)
         
         console.log('downloading video...')
         await this.s3Service.downloadVideoFromS3(queuePayload.sourceBucketName, queuePayload.fileKey, downloadPath);
@@ -51,11 +56,11 @@ export class VideoConsumerService {
         await this.s3Service.uploadZipToS3(zipPath, queuePayload.targetBucketName, fileName);
 
         const updateStatusDto = new UpdateFileDataDto('SUCCESS', fileName);
-        await this.videoService.updateStatus(queuePayload.fileId, updateStatusDto)
+        await this.dogVideoApiClient.updateFileStatus(queuePayload.fileId, updateStatusDto)
     }
     catch(err){
       const updateStatusDto = new UpdateFileDataDto('ERROR', fileName);
-      await this.videoService.updateStatus(queuePayload.fileId, updateStatusDto)
+      await this.dogVideoApiClient.updateFileStatus(queuePayload.fileId, updateStatusDto)
     }
     
   }

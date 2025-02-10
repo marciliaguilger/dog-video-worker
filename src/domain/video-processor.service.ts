@@ -7,15 +7,6 @@ import { UpdateFileDataDto } from "./dto/update-file-data.dto";
 
 @Injectable()
 export class VideoService {
-  constructor(
-    @Inject(IDogVideoApiClient)
-    private readonly videoFileService: IDogVideoApiClient,
-  ) {}
-
-  async updateStatus(fileId: string,dto: UpdateFileDataDto ){
-    this.videoFileService.updateFileStatus(fileId, dto)
-  }
-
   async extractFrames(videoPath: string, outputDir: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
       const frameFiles: string[] = [];
